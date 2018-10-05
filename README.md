@@ -2,6 +2,7 @@
 ComputerVision_HW
 
 0928 
+
 1.rGB2Gray() : 照片轉為灰階 
    Gray = 0.299*red + 0.587*green + 0.114*blue
   
