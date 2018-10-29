@@ -5,12 +5,14 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private ImageView imgIn,imgOut;
+    private ImageView imgIn,imgOut, imgSub;
     private Bitmap bmpIn, bmpOut;
 
     @Override
@@ -20,9 +22,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_RGB2gGray).setOnClickListener(this);
         findViewById(R.id.btn_ScaleBright).setOnClickListener(this);
         findViewById(R.id.btn_ChangeGamma).setOnClickListener(this);
+        findViewById(R.id.btn_SubImage).setOnClickListener(this);
 
         imgIn = findViewById(R.id.img_input);
         imgOut = findViewById(R.id.img_output);
+        imgSub = findViewById(R.id.img_sub);
     }
 
     @Override
@@ -37,6 +41,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_ChangeGamma :
                 changeGamma();
                 break;
+            case R.id.btn_SubImage:
+                Log.d("tag","click");
+                imageSub();
+                break;
+
             default:
                 break;
         }
@@ -101,7 +110,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         imgOut.setImageBitmap(bmpOut);
     }
-     private int checkRange(int data, float scale){
+
+    private int checkRange(int data, float scale){
         data = (int) (data * scale) ;
         if(data > 255){
             data = 255 ;
@@ -110,7 +120,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         return data;
      }
-
 
     private void changeGamma(){
         BitmapDrawable  src = (BitmapDrawable)imgIn.getDrawable();
@@ -147,5 +156,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         imgOut.setImageBitmap(bmpOut);
+    }
+
+    private void imageSub(){
+
+        BitmapDrawable  src1 = (BitmapDrawable)imgIn.getDrawable();
+        BitmapDrawable  src2 = (BitmapDrawable)imgOut.getDrawable();
+        bmpIn = src1.getBitmap();
+        bmpOut = src2.getBitmap();
+
+        int width = bmpIn.getWidth();
+        int height = bmpIn.getHeight();
+        Bitmap.Config config = bmpIn.getConfig();
+
+        int redIn, greenIn, blueIn, pixelIn, grayIn ;
+        int redOut, greenOut, blueOut, pixelOut, grayOut ;
+
+        Bitmap operation = Bitmap.createBitmap(width , height , config);
+
+        for(int x = 0 ; x < width ; x++){
+            for(int y = 0 ; y < height ; y++){
+                pixelIn = bmpIn.getPixel(x,y);
+                redIn = Color.red(pixelIn);
+                greenIn = Color.green(pixelIn);
+                blueIn = Color.blue(pixelIn);
+                grayIn = (int) (0.3 *redIn + 0.59*greenIn + 0.11*blueIn);
+                
+                pixelOut = bmpOut.getPixel(x,y);
+                redOut = Color.red(pixelOut);
+                greenOut = Color.green(pixelOut);
+                blueOut = Color.blue(pixelOut);
+                grayOut = (int) (0.3 *redOut + 0.59*greenOut + 0.11*blueOut);
+
+                int diff = Math.abs(grayIn - grayOut);
+                if(diff > 30){
+                    operation.setPixel(x, y , Color.argb(Color.alpha(pixelIn), 255,255,255));
+                }else {
+                    operation.setPixel(x, y , Color.argb(Color.alpha(pixelIn), 0,0,0));
+                }
+
+            }
+        }
+        imgSub.setImageBitmap(operation);
     }
 }

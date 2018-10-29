@@ -8,13 +8,6 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <ImageView
-        android:id="@+id/img_input"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:src="@drawable/lena"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,15 +33,45 @@
             android:layout_gravity="center"
             android:text="ChangeGamma"/>
 
+        <Button
+            android:id="@+id/btn_SubImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Sub Image"/>
+
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/img_input"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:src="@drawable/c1"/>
+
      <ImageView
         android:id="@+id/img_output"
         android:layout_gravity="center"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+         android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="20dp"
+        android:src = "@drawable/c2"
+         />
+
+    <ImageView
+        android:id="@+id/img_sub"
+        android:layout_gravity="center"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:layout_marginTop="20dp" />
 
-
+    </LinearLayout>
 
 </LinearLayout>
