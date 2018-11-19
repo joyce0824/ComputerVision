@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">RGB2Gray</string>
+    <string name="action_load_image">action_load_image</string>
+    <string name="menu_mean_blur">menu_mean_blur</string>
+    <string name="menu_gaussian_blur">menu_gaussian_blur</string>
+    <string name="menu_median_blur">menu_median_blur</string>
+    <string name="menu_sharpen_image">menu_sharpen_image</string>
 </resources>

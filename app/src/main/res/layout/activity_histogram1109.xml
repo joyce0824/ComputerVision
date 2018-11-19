@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.g315.rgb2gray.class_1109.Histogram1109Activity">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btn1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text="Histogram_Image1" />
+
+        <Button
+            android:id="@+id/btn2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text="Histogram_Image2" />
+
+        <Button
+            android:id="@+id/btn3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text="Gray he" />
+
+        <Button
+            android:id="@+id/btn4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text="Hsv_he" />
+
+        <Button
+            android:id="@+id/btn5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text="Yuv_he" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lay_input"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/inputImg1"
+            android:layout_width="480dp"
+            android:layout_height="270dp"
+            android:src="@drawable/c1"/>
+
+        <ImageView
+            android:id="@+id/inputImg2"
+            android:layout_width="480dp"
+            android:layout_height="270dp"
+            android:src="@drawable/c2"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lay_output"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/outputImg1"
+            android:layout_width="480dp"
+            android:layout_height="270dp" />
+
+        <ImageView
+            android:id="@+id/outputImg2"
+            android:layout_width="480dp"
+            android:layout_height="270dp" />
+
+    </LinearLayout>
+
+</LinearLayout>
