@@ -28,7 +28,6 @@ import org.opencv.imgproc.Imgproc;
 import java.util.Arrays;
 
 import static org.opencv.imgproc.Imgproc.COLOR_RGB2GRAY;
-import static org.opencv.imgproc.Imgproc.findContours;
 
 public class Histogram1109Activity extends AppCompatActivity {
 
@@ -250,6 +249,5 @@ public class Histogram1109Activity extends AppCompatActivity {
 
 
     }
-
-
+    
 }

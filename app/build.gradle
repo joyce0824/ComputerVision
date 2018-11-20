@@ -9,6 +9,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [HOCKEYAPP_APP_ID: "6feda97edad740e396943a65604fa984"]
     }
     buildTypes {
         release {
@@ -26,4 +27,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation project(':openCVLibrary343')
+    compile 'net.hockeyapp.android:HockeySDK:5.1.0'
 }
