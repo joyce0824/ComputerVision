@@ -8,6 +8,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+        project.ext.set("archivesBaseName", "APP_ver_" + versionName + "-" + getJenkinsBuildNumber())
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [HOCKEYAPP_APP_ID: "6feda97edad740e396943a65604fa984"]
     }
@@ -18,6 +19,12 @@ android {
         }
     }
 }
+
+def getJenkinsBuildNumber() {
+    def number = System.getenv("BUILD_NUMBER") as Integer ?: 0
+    return number
+}
+
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
