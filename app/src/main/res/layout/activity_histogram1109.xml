@@ -46,7 +46,19 @@
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:text="Yuv_he" />
+        <Button
+            android:id="@+id/btn6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text="Otsu Threshold" />
 
+        <Button
+            android:id="@+id/btn7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text="Region Labeling" />
     </LinearLayout>
 
     <LinearLayout

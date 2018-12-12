@@ -42,6 +42,24 @@
             android:layout_height="wrap_content"
             android:text="menu_threshold_image"/>
 
+        <Button
+            android:id="@+id/bAdaptive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Adaptive Threshold"/>
+
+        <Button
+            android:id="@+id/bOtsu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Otsu Threshold"/>
+
+        <Button
+            android:id="@+id/bRegionLabeling"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/menu_median_blur"/>
+
     </LinearLayout>
 
 </ScrollView>

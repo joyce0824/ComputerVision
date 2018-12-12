@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.g315.rgb2gray.R;
 
@@ -25,13 +26,22 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static com.example.g315.rgb2gray.class_1116.HomeActivity.ADAPTIVE_THRESHOLD;
+import static com.example.g315.rgb2gray.class_1116.HomeActivity.OTSU_THRESHOLD;
+import static com.example.g315.rgb2gray.class_1116.HomeActivity.REGION_LABELING;
 
 public class MeanBlur1116Activity extends AppCompatActivity {
 
@@ -127,27 +137,37 @@ public class MeanBlur1116Activity extends AppCompatActivity {
                                 break;
 
                             // class_1123
-                            case HomeActivity.GAUSSIAN_BLUR :
-                                Imgproc.GaussianBlur(src, src, new Size(29,29),0);
+                            case HomeActivity.GAUSSIAN_BLUR :  //模糊
+                                gaussian();
                                 break;
 
-                            case HomeActivity.MEDIAN_BLUR:
-                                Imgproc.medianBlur(src, src ,9);
+                            case HomeActivity.MEDIAN_BLUR: //去雜質
+                                median_blur();
                                 break;
 
-                            case HomeActivity.SHARPEN:
-                                Mat kernel = new Mat(3, 3, CvType.CV_16SC1);
-                                kernel.put(0,0,0, -1,0,-1 ,5,-1,0 ,-1,0);
-                                Imgproc.filter2D(src, src, src_gray.depth(), kernel);
+                            case HomeActivity.SHARPEN: //銳利
+                                sharpen();
                                 break;
 
-                            case HomeActivity.THRESHOLD:
-                                Imgproc.cvtColor(src, src_gray, Imgproc.COLOR_BGR2GRAY);
-                                Mat bin = new Mat(src_gray.rows() , src_gray.cols(), CvType.CV_8UC1);
-                                Imgproc.threshold(src_gray, bin, 100, 255, Imgproc.THRESH_BINARY);
-                                Imgproc.cvtColor(bin, src, Imgproc.COLOR_GRAY2RGBA, 4);
-
+                            case HomeActivity.THRESHOLD: //將前景跟背景切開
+                                median_blur();
+                                sharpen();
+                                threshold();
                                 break;
+
+                            //class_1207
+                            case ADAPTIVE_THRESHOLD:
+                                setAptive();
+                                break;
+
+                            case OTSU_THRESHOLD:
+                                setOtsu();
+                                break;
+
+                            case REGION_LABELING:
+                                setReginLabling();
+                                break;
+
 
                             default:
                                 break;
@@ -173,6 +193,61 @@ public class MeanBlur1116Activity extends AppCompatActivity {
 
     }
 
+    private void gaussian() {
+        Imgproc.GaussianBlur(src, src, new Size(29,29),0);
+    }
+
+    private void median_blur() {
+        Imgproc.medianBlur(src, src ,9);
+    }
+
+    private void threshold() {
+        Imgproc.cvtColor(src, src_gray, Imgproc.COLOR_BGR2GRAY);
+        Mat bin = new Mat(src_gray.rows() , src_gray.cols(), CvType.CV_8UC1);
+        Imgproc.threshold(src_gray, bin, 80, 190, Imgproc.THRESH_BINARY);
+        Imgproc.cvtColor(bin, src, Imgproc.COLOR_GRAY2RGBA, 4);
+    }
+
+    private void sharpen() {
+        Mat kernel = new Mat(3, 3, CvType.CV_16SC1);
+        kernel.put(0,0,0, -1,0,-1 ,5,-1,0 ,-1,0);
+        Imgproc.filter2D(src, src, src_gray.depth(), kernel);
+    }
+
+    private void setAptive(){
+        Imgproc.cvtColor(src,src_gray,Imgproc.COLOR_BGR2GRAY);
+        Imgproc.adaptiveThreshold(src_gray,src_gray,255,Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,Imgproc.THRESH_BINARY,59,0); //blockSize 要單數
+        Imgproc.cvtColor(src_gray,src,Imgproc.COLOR_GRAY2RGBA,4);
+    }
+
+    private void setOtsu(){
+        Imgproc.cvtColor(src,src_gray,Imgproc.COLOR_BGR2GRAY);
+        double threshold=Imgproc.threshold(src_gray,src_gray,0,255,Imgproc.THRESH_OTSU);
+        Imgproc.cvtColor(src_gray,src,Imgproc.COLOR_GRAY2RGBA,4);
+
+        TextView tv1=findViewById(R.id.textView1);
+        tv1.setText("Thresold Value="+ threshold);
+    }
+
+    private void setReginLabling(){
+        Imgproc.cvtColor(src,src_gray,Imgproc.COLOR_BGR2GRAY);
+        Mat bin1 = new Mat(src_gray.rows(), src_gray.cols(),CvType.CV_8UC1);
+        Imgproc.threshold(src_gray,bin1,111,233,Imgproc.THRESH_BINARY_INV);
+
+        //finding contours
+        List<MatOfPoint>contourListTemp=new ArrayList<>();
+        Mat hierarchy = new Mat();
+        Imgproc.findContours(bin1,contourListTemp,hierarchy,Imgproc.RETR_EXTERNAL,Imgproc.CHAIN_APPROX_SIMPLE);
+        //now iterate over all top level contours
+        for (int idx=0;idx>=0;idx=(int)hierarchy.get(0,idx)[0]){
+            MatOfPoint matOfPoint=contourListTemp.get(idx);
+            Rect rect=Imgproc.boundingRect(matOfPoint);
+            Imgproc.rectangle(src,new Point(rect.x,rect.y),new Point(rect.x+((Rect) rect).width,rect.y+rect.height),new Scalar(255,0,0,255),5);
+        }
+
+    }
+
+
     private void checkPermission() {
         String log = "checkPermission";
         Intent intent = getIntent();
@@ -191,7 +266,6 @@ public class MeanBlur1116Activity extends AppCompatActivity {
             read_external_storage_granted = true;
         }
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
        if(requestCode == REQUEST_READ_EXTERNAL_STORAGE){

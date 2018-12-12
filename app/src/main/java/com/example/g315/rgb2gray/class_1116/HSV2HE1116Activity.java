@@ -17,9 +17,15 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class HSV2HE1116Activity extends AppCompatActivity {
 
@@ -56,6 +62,20 @@ public class HSV2HE1116Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 b5_Click();
+            }
+        });
+
+        findViewById(R.id.btn6).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                b6_Click();
+            }
+        });
+
+        findViewById(R.id.btn7).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                b7_Click();
             }
         });
 
@@ -111,7 +131,6 @@ public class HSV2HE1116Activity extends AppCompatActivity {
         Imgproc.cvtColor(HSV, enhancedImage, Imgproc.COLOR_HSV2BGR);
         displayMatImage(enhancedImage, iv4);
     }
-
     private void displayMatImage(Mat image, ImageView iv) {
         Bitmap bmp = Bitmap.createBitmap(image.cols(), image.rows(), Bitmap.Config.ARGB_8888); //RGB_565
 
@@ -131,7 +150,6 @@ public class HSV2HE1116Activity extends AppCompatActivity {
         Bitmap rgbHE = YUVHE(bmp1);
         iv3.setImageBitmap(rgbHE);
     }
-
     private Bitmap YUVHE(Bitmap src){
         int width = src.getWidth();
         int height = src.getHeight();
@@ -200,5 +218,84 @@ public class HSV2HE1116Activity extends AppCompatActivity {
             }
         }
         return processedImage;
+    }
+
+    public void b6_Click (){
+        iv1=(ImageView)findViewById(R.id.inputImg1);
+        BitmapDrawable abmp=(BitmapDrawable)iv1.getDrawable();
+        bmp1=abmp.getBitmap();
+        iv2=(ImageView)findViewById(R.id.outputImg1);
+
+        Bitmap thrBmp=Otsu(bmp1);
+
+        iv2.setImageBitmap(thrBmp);
+        iv2.invalidate();
+    }
+    private Bitmap Otsu(Bitmap bmpid)
+    {
+        bmp2=Bitmap.createBitmap(bmpid.getWidth(),bmpid.getHeight(),bmpid.getConfig());
+        int imgH=bmp2.getHeight();
+        int imgW=bmp2.getWidth();
+        Mat rgba=new Mat(imgH,imgW,CvType.CV_8UC(1));
+        Mat gray=new Mat(imgH,imgW,CvType.CV_8UC(1));
+        Mat bin=new Mat(imgH,imgW,CvType.CV_8UC(1));
+        Utils.bitmapToMat(bmpid,rgba);
+
+        Imgproc.cvtColor(rgba,gray,Imgproc.COLOR_BGR2GRAY);
+        //Imgproc.GaussianBlur(gray,gray,new Size(3,3)0);
+        //Imgproc.medianBlur(rgba,rgba,3);
+        Imgproc.threshold(gray,bin,0,255,Imgproc.THRESH_OTSU);
+
+        try{
+            bmp2=Bitmap.createBitmap(rgba.cols(),rgba.rows(),Bitmap.Config.ARGB_8888);
+            Utils.matToBitmap(bin,bmp2);
+        }catch (Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        return bmp2;
+
+
+    }
+
+    public void b7_Click(){
+        iv1=(ImageView)findViewById(R.id.inputImg1);
+        BitmapDrawable abmp=(BitmapDrawable)iv1.getDrawable();
+        bmp1=abmp.getBitmap();
+        iv2=(ImageView)findViewById(R.id.outputImg1);
+
+        Bitmap regBmp=RegionLabeling(bmp1);
+        iv1.setImageBitmap(regBmp);
+        iv1.invalidate();
+    }
+    private Bitmap RegionLabeling(Bitmap bmp)
+    {
+        bmp2 = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
+        int imgH = bmp2.getHeight();
+        int imgW = bmp2.getWidth();
+
+        Mat rgba = new Mat(imgH, imgW, CvType.CV_8UC(1));
+        Utils.bitmapToMat(bmp, rgba);
+        Mat gray = new Mat(imgH, imgW, CvType.CV_8UC(1));
+        Imgproc.cvtColor(rgba, gray, Imgproc.COLOR_RGB2GRAY);
+        Mat bin = new Mat(imgH, imgW, CvType.CV_8UC(1));
+        Imgproc.threshold(gray, bin, 111, 255, Imgproc.THRESH_BINARY_INV);
+
+        //finding contours
+        List<MatOfPoint> contourListTemp = new ArrayList<>();
+        Mat hierarchy = new Mat();
+        Imgproc.findContours(bin, contourListTemp, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+        //now iterate over all top level contours
+        for (int idx = 0; idx >= 0; idx = (int) hierarchy.get(0, idx)[0]) {
+            MatOfPoint matOfPoint = contourListTemp.get(idx);
+            Rect rect = Imgproc.boundingRect(matOfPoint);
+            Imgproc.rectangle(rgba, new Point(rect.x, rect.y), new Point(rect.x + rect.width,rect.y+ rect.height), new Scalar(255, 0, 0, 255), 5);
+        }
+        try {
+            bmp2 = Bitmap.createBitmap(rgba.cols(), rgba.rows(), Bitmap.Config.ARGB_8888);
+            Utils.matToBitmap(rgba, bmp2);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return bmp2;
     }
 }
